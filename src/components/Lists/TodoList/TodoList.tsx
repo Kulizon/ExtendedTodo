@@ -17,7 +17,7 @@ const StyledTodoList = styled.ul`
 
 const TodoList = (props: {
   todos: TodoInterface[];
-  onDelete: (id: string, type: "PROJECT" | "TODO") => void;
+  onDelete: (id: string, type: "PROJECT" | "TODO", projectID?: string) => void;
   onToggleState?: (id: string) => void;
 }) => {
   return (

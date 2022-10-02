@@ -7,7 +7,7 @@ import ProjectList from "./ProjectList/ProjectList";
 const Lists = (props: {
   todos: TodoInterface[];
   projects: ProjectInterface[];
-  onDelete: (id: string, type: "PROJECT" | "TODO") => void;
+  onDelete: (id: string, type: "PROJECT" | "TODO", projectID?: string) => void;
   onToggleState?: (id: string) => void;
 }) => {
   return (

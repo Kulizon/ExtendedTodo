@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { nanoid } from "nanoid";
 import ProjectInterface from "../../interfaces/ProjectInterface";
 import TodoInterface from "../../interfaces/TodoInterface";
+import { ChromePicker } from "react-color";
 
 import Todo from "../Todo/Todo";
 
@@ -12,6 +13,7 @@ const StyledAddTodo = styled.div`
   padding: 0.25em 1em;
   border: 2px solid palevioletred;
   border-radius: 3px;
+  background: #fff;
 `;
 
 const AddTodo = (props: {
@@ -25,7 +27,7 @@ const AddTodo = (props: {
     id: nanoid(),
     title: "",
     text: "",
-    color: "",
+    color: "#000",
     projectID: props.projects[0]?.id,
     projectTitle: props.projects[0]?.title,
     finished: false,
@@ -127,19 +129,44 @@ const AddTodo = (props: {
     <StyledAddTodo>
       <form onSubmit={addTodoHandler} ref={formRef}>
         <h2>Todo</h2>
-        <input type="text" name="title" onChange={handleChange} />
-        <input type="text" name="text" onChange={handleChange} />
-        <input type="text" name="color" onChange={handleChange} />
-        <input type="date" name="dueToDate" onChange={handleChange} />
-        <input type="time" name="dueToTime" onChange={handleChange} />
+        <div>
+          <label htmlFor="title">Title</label>
+          <input type="text" name="title" onChange={handleChange} />
+        </div>
+        <div>
+          <label htmlFor="title">Text</label>
+          <input type="text" name="text" onChange={handleChange} />
+        </div>
+        <div>
+          <label htmlFor="title">Color</label>
+          <input type="color" name="color" onChange={handleChange} />
+        </div>
+        <div>
+          <label htmlFor="title">Due to</label>
+          <input type="date" name="dueToDate" onChange={handleChange} />
+          <input type="time" name="dueToTime" onChange={handleChange} />
+        </div>
+
         <div>
           <h2>Project</h2>
           {isAddProjectMenuVisible || props.projects.length === 0 ? (
             <>
-              <input type="text" name="projectTitle" />
-              <input type="text" name="projectDescription" />
-              <input type="text" name="projectColor" />
-              <input type="text" name="projectIcon" />
+              <div>
+                <label htmlFor="projectTitle">Title</label>
+                <input type="text" name="projectTitle" />
+              </div>
+              <div>
+                <label htmlFor="projectDescription">Description</label>
+                <input type="text" name="projectDescription" />
+              </div>
+              <div>
+                <label htmlFor="projectColor">Color</label>
+                <input type="color" name="projectColor" />
+              </div>
+              <div>
+                <label htmlFor="projectIcon">Icon</label>
+                <input type="text" name="projectIcon" />
+              </div>
               <button id="project-submit">Add Project</button>
             </>
           ) : (
@@ -169,7 +196,7 @@ const AddTodo = (props: {
         todo.color &&
         todo.projectID &&
         todo.dueToDate &&
-        todo.dueToTime && <Todo todo={todo}></Todo>}
+        todo.dueToTime && <Todo todo={todo} onToggleState={() => {}}></Todo>}
     </StyledAddTodo>
   );
 };

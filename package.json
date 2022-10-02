@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@splidejs/react-splide": "^0.7.12",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@trendyol-js/react-carousel": "^3.0.0",
     "@types/jest": "^27.5.2",
     "@types/nanoid": "^3.0.0",
     "@types/node": "^16.11.62",
@@ -13,6 +15,7 @@
     "@types/react-dom": "^18.0.6",
     "nanoid": "^4.0.0",
     "react": "^18.2.0",
+    "react-color": "^2.19.3",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "styled-components": "^5.3.6",
@@ -44,6 +47,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-color": "^3.0.6",
     "@types/styled-components": "^5.1.26"
   }
 }
