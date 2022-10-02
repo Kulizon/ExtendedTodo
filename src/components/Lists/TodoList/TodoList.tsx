@@ -3,15 +3,13 @@ import TodoInterface from "../../../interfaces/TodoInterface";
 
 import Todo from "../../Todo/Todo";
 
-const StyledTodoList = styled.ul`
-  font-size: 1em;
-  margin: 1em;
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
-  border-radius: 3px;
+import { fntWghtNrml } from "../../../resources/variables";
 
-  ul {
-    background: red;
+const StyledTodoList = styled.ul`
+  margnin: 2rem 0;
+
+  h2 {
+    font-weight: ${fntWghtNrml};
   }
 `;
 
@@ -22,6 +20,7 @@ const TodoList = (props: {
 }) => {
   return (
     <StyledTodoList>
+      <h2>Your Todos ✒️</h2>
       {props.todos.map((todo) => (
         <Todo
           todo={todo}

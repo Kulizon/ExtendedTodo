@@ -1,12 +1,35 @@
 import styled from "styled-components";
 import TodoInterface from "../../interfaces/TodoInterface";
 
-const StyledTodo = styled.div`
+import Button from "../UI/Button/Button";
+
+import { positive, lght1, lght3 } from "../../resources/variables";
+
+interface StyledTodo {
+  afterColor: string;
+}
+
+const StyledTodo = styled.div<StyledTodo>`
   border-radius: 15px;
-  background: #eee;
+  background: ${lght1};
   padding: 1rem;
   display: flex;
   position: relative;
+  margin: 1rem 0 1.5rem;
+  align-items: center;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: ${(props) => props.afterColor};
+    height: 5px;
+  }
+
+
 
   > div {
     display: flex;
@@ -19,15 +42,36 @@ const StyledTodo = styled.div`
 
   button {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 1rem;
+    right: 1rem;
+  }
+
+  .checkbox {
+    margin-right: 1rem;
+    border-radius: 360px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+
+    input {
+      height 100%;
+      width: 100%;
+      accent-color: ${positive};
+
+      &:not(:checked) {
+        transform: scale(125%)
+      }
+    }
   }
 `;
 
 const Todo = (props: {
   todo: TodoInterface;
   onDelete?: (id: string, type: "PROJECT" | "TODO", projectID?: string) => void;
-  onToggleState?: (id: string) => void;
+  onToggleState?: (id: string, projectID: string) => void;
 }) => {
   const deleteHandler = () => {
     if (props.onDelete)
@@ -35,18 +79,27 @@ const Todo = (props: {
   };
 
   const toggleStateHandler = () => {
-    if (props.onToggleState) props.onToggleState(props.todo.id);
+    if (props.onToggleState)
+      props.onToggleState(props.todo.id, props.todo.projectID);
   };
 
   return (
-    <StyledTodo>
-      <input
-        type={"checkbox"}
-        checked={props.todo.finished}
-        onChange={toggleStateHandler}
-      />
+    <StyledTodo afterColor={props.todo.color}>
+      <div
+        className="checkbox"
+        style={
+          !props.todo.finished ? { boxShadow: `0px 0px 0px 3px ${lght3}` } : {}
+        }
+      >
+        <input
+          type={"checkbox"}
+          checked={props.todo.finished}
+          onChange={toggleStateHandler}
+        />
+      </div>
+
       <div>
-        <h3>{props.todo.title}</h3>
+        <h4>{props.todo.title}</h4>
         <p>{props.todo.text}</p>
         <p>
           Project: {props.todo.projectTitle}
@@ -56,7 +109,7 @@ const Todo = (props: {
       </div>
 
       {props.onDelete && props.todo.finished && (
-        <button onClick={deleteHandler}>Delete</button>
+        <Button onClick={deleteHandler}>Delete</Button>
       )}
     </StyledTodo>
   );

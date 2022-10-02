@@ -6,17 +6,32 @@ import Project from "../../Project/Project";
 import { Splide, SplideSlide, SplideTrack } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
 
+
+import { fntWghtBld, fntWghtNrml } from "../../../resources/variables";
+
 const StyledProjectList = styled.ul`
-  font-size: 1em;
-  margin: 1em;
-  padding: 1rem;
-  border: 2px solid palevioletred;
-  border-radius: 3px;
+  margin: 2rem 0;
+
+  h2 {
+    font-weight: ${fntWghtNrml};
+  }
+
+  ul li {
+    margin: 1rem;
+  }
+
+  ul li:first-of-type {
+    margin-left: 0;
+  }
+  ul li:last-of-type {
+    margin-right: 0;
+  }
 `;
 
 const ProjectList = (props: {
   projects: ProjectInterface[];
   onDelete: (id: string, type: "PROJECT" | "TODO") => void;
+  onToggleState?: (id: string, projectID?: string) => void;
 }) => {
   const carouselRef = useRef<any>();
 
@@ -32,6 +47,7 @@ const ProjectList = (props: {
 
   return (
     <StyledProjectList>
+      <h2>Your Projects 📋</h2>
       <Splide
         hasTrack={false}
         options={{ rewind: true, perPage: 3, arrows: false }}
@@ -45,6 +61,7 @@ const ProjectList = (props: {
                 project={p}
                 onDelete={props.onDelete}
                 onChangeProgressBar={changeProgressBar}
+                onToggleState={props.onToggleState}
               ></Project>
             </SplideSlide>
           ))}

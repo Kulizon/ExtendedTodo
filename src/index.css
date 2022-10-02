@@ -1,20 +1,61 @@
 .my-carousel-progress {
-  background: #ccc;
+  background: #e2e9f1;
 }
 
 .my-carousel-progress-bar {
-  background: red;
-  height: 2px;
+  background: #5d54bf;
+  height: 3px;
   transition: width 400ms ease;
   width: 0;
+  border-radius: 360px;
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  outline: none;
+}
+
+body {
+  background: #f5f5f5;
+}
+
+html {
+  font-family: "Rubik", sans-serif;
+}
+
+button {
+  cursor: pointer;
+}
+
+button,
+label,
+textarea,
+input {
+  font-family: inherit;
+  font-weight: inherit;
 }
 
 ul {
   list-style: none;
+}
+
+input {
+  border: 2px #d8dbe4 solid;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #2c2c2c;
+  font-weight: 400;
+}
+
+label {
+  color: #141414;
+  font-weight: 500;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="time"] {
+  padding: 0.25rem 0.5rem;
 }

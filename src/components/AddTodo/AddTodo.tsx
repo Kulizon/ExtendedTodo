@@ -3,23 +3,81 @@ import styled from "styled-components";
 import { nanoid } from "nanoid";
 import ProjectInterface from "../../interfaces/ProjectInterface";
 import TodoInterface from "../../interfaces/TodoInterface";
-import { ChromePicker } from "react-color";
 
 import Todo from "../Todo/Todo";
+import IconButton from "../UI/IconButton/IconButton";
+import Button from "../UI/Button/Button";
 
 const StyledAddTodo = styled.div`
-  font-size: 1em;
-  margin: 1em;
-  padding: 0.25em 1em;
-  border: 2px solid palevioletred;
-  border-radius: 3px;
+  border-radius: 15px;
+  padding: 1rem;
   background: #fff;
+  width: 100%;
+  position: relative;
+
+  > button {
+    position: absolute;
+    left: -0.75rem;
+    top: -0.75rem;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  form > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 0.5rem;
+    column-gap: 2rem;
+
+    button {
+      justify-self: flex-start;
+    }
+
+    &:nth-of-type(2) {
+      margin: 2rem 0;
+    }
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 100%;
+
+      > div {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 2rem;
+      }
+
+      label {
+        font-size: 1.1rem;
+      }
+
+      input {
+        margin-top: 0.4rem;
+        width: 100%;
+        height: 1.75rem;
+      }
+    }
+  }
+
+  h2 {
+    grid-column: 1/3;
+  }
+
+  form > button {
+    align-self: center;
+  }
 `;
 
 const AddTodo = (props: {
   onAddTodo: (newTodo: TodoInterface) => void;
   onAddProject: (newProject: ProjectInterface) => void;
   projects: ProjectInterface[];
+  closePopup: () => void;
 }) => {
   const formRef = useRef<any>();
 
@@ -71,6 +129,7 @@ const AddTodo = (props: {
 
     if (e.nativeEvent.submitter.id === "todo-submit") {
       const projectInput = e.target[5];
+
       setTodo((t) => {
         return {
           ...t,
@@ -88,12 +147,12 @@ const AddTodo = (props: {
         !todo.dueToDate ||
         !todo.dueToTime
       ) {
-        alert("Fill out fields");
+        alert("Fill out all fields!");
         return;
       }
 
       if (!projectInput.value && projectInput.name !== "project") {
-        alert("Add project");
+        alert("Add project!");
         return;
       }
 
@@ -127,24 +186,29 @@ const AddTodo = (props: {
 
   return (
     <StyledAddTodo>
+      <IconButton onClick={props.closePopup} icon="x"></IconButton>
       <form onSubmit={addTodoHandler} ref={formRef}>
-        <h2>Todo</h2>
         <div>
-          <label htmlFor="title">Title</label>
-          <input type="text" name="title" onChange={handleChange} />
-        </div>
-        <div>
-          <label htmlFor="title">Text</label>
-          <input type="text" name="text" onChange={handleChange} />
-        </div>
-        <div>
-          <label htmlFor="title">Color</label>
-          <input type="color" name="color" onChange={handleChange} />
-        </div>
-        <div>
-          <label htmlFor="title">Due to</label>
-          <input type="date" name="dueToDate" onChange={handleChange} />
-          <input type="time" name="dueToTime" onChange={handleChange} />
+          <h2>Todo</h2>
+          <div>
+            <label htmlFor="title">Title</label>
+            <input type="text" name="title" onChange={handleChange} />
+          </div>
+          <div>
+            <label htmlFor="title">Text</label>
+            <input type="text" name="text" onChange={handleChange} />
+          </div>
+          <div>
+            <label htmlFor="title">Color</label>
+            <input type="color" name="color" onChange={handleChange} />
+          </div>
+          <div>
+            <label htmlFor="title">Due to</label>
+            <div>
+              <input type="date" name="dueToDate" onChange={handleChange} />
+              <input type="time" name="dueToTime" onChange={handleChange} />
+            </div>
+          </div>
         </div>
 
         <div>
@@ -167,7 +231,7 @@ const AddTodo = (props: {
                 <label htmlFor="projectIcon">Icon</label>
                 <input type="text" name="projectIcon" />
               </div>
-              <button id="project-submit">Add Project</button>
+              <Button id="project-submit">Add New Project</Button>
             </>
           ) : (
             <select name="project" onChange={handleChange}>
@@ -179,17 +243,21 @@ const AddTodo = (props: {
             </select>
           )}
           {props.projects.length !== 0 && (
-            <button
+            <Button
               onClick={() =>
                 setIsAddProjectMenuVisible((prevState) => !prevState)
               }
             >
-              Change
-            </button>
+              {isAddProjectMenuVisible
+                ? "Add to Existing Project "
+                : "Add to New Project"}
+            </Button>
           )}
         </div>
 
-        <button id="todo-submit">Add</button>
+        <Button id="todo-submit" disabled={isAddProjectMenuVisible}>
+          Add
+        </Button>
       </form>
       {todo.title &&
         todo.text &&

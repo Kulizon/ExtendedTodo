@@ -7,18 +7,43 @@ import AddTodo from "./components/AddTodo/AddTodo";
 import Lists from "./components/Lists/Litsts";
 import IconButton from "./components/UI/IconButton/IconButton";
 import Popup from "./components/UI/Popup/Popup";
+import Button from "./components/UI/Button/Button";
 
 const StyledApp = styled.div`
   display: flex;
   flex-direction: column;
   max-width: 1200px;
-  margin: auto;
+  margin: 2rem auto;
 
-  > button {
+  .username-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  > button:not(.username-wrap button) {
     position: absolute;
-    right: 0;
-    bottom: 0;
+    right: 1.5rem;
+    bottom: 1.5rem;
     z-index: 160;
+    width: 3rem;
+    height: 3rem;
+    font-size: 2.25rem;
+  }
+`;
+
+const StyledNameForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+
+  label {
+    font-size: 2rem;
+  }
+
+  input {
+    margin: 0.5rem 0 2rem;
   }
 `;
 
@@ -45,11 +70,26 @@ const App = () => {
     setProjects((prevProjects) => [...prevProjects, newProject]);
   };
 
-  const toggleStateHandler = (id: string) => {
+  const toggleStateHandler = (id: string, projectID?: string) => {
     setTodos((prevTodos) => [
       ...prevTodos.map((t) => {
         if (t.id === id) return { ...t, finished: !t.finished };
         else return t;
+      }),
+    ]);
+    setProjects((prevProjects) => [
+      ...prevProjects.map((p) => {
+        if (p.id === projectID) {
+          return {
+            ...p,
+            todos: [
+              ...p.todos.map((t) => {
+                if (t.id === id) return { ...t, finished: !t.finished };
+                else return t;
+              }),
+            ],
+          };
+        } else return p;
       }),
     ]);
   };
@@ -105,8 +145,8 @@ const App = () => {
 
   if (!name)
     return (
-      <Popup>
-        <form
+      <Popup isUsernameBackdrop>
+        <StyledNameForm
           onSubmit={(e: any) => {
             e.preventDefault();
             setName(e.target[0].value);
@@ -115,20 +155,27 @@ const App = () => {
         >
           <label htmlFor="name">What's your name?</label>
           <input type="text" name="name" />
-          <button>Start</button>
-        </form>
+          <Button>Start</Button>
+        </StyledNameForm>
       </Popup>
     );
 
   return (
     <StyledApp>
-      <h1>Hi, {name}</h1>
+      <div className="username-wrap">
+        <h1>Hi, {name} 👋</h1>
+        <Button onClick={() => setName("")} className="edit-username">
+          Edit username
+        </Button>
+      </div>
+
       {isAddTodoVisible && (
         <Popup onBackdropClick={() => setIsAddTodoVisible(false)}>
           <AddTodo
             onAddTodo={addTodoHandler}
             onAddProject={addProjectHandler}
             projects={projects}
+            closePopup={() => setIsAddTodoVisible(false)}
           ></AddTodo>
         </Popup>
       )}
