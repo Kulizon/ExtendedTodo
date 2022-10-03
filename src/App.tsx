@@ -9,6 +9,7 @@ import IconButton from "./components/UI/IconButton/IconButton";
 import Popup from "./components/UI/Popup/Popup";
 import Button from "./components/UI/Button/Button";
 import AddIcon from "./assets/AddIcon";
+import EditIcon from "./assets/EditIcon";
 
 const StyledApp = styled.div`
   display: flex;
@@ -20,11 +21,24 @@ const StyledApp = styled.div`
     padding: 0 2rem;
   }
 
+  @media (max-width: 616px) { 
+    padding: 0 1rem;
+  }
 
   .username-wrap {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    button {
+      width: 2.5rem;
+      height: 2.5rem;
+
+      svg {
+        width: 2rem;
+        height: 2rem;
+      }
+    }
   }
 
   > button:not(.username-wrap button) {
@@ -195,9 +209,7 @@ const App = () => {
     <StyledApp>
       <div className="username-wrap">
         <h1>Hi, {name} 👋</h1>
-        <Button onClick={() => setName("")} className="edit-username">
-          Edit username
-        </Button>
+        <IconButton icon={          <EditIcon></EditIcon>} onClick={() => setName("")} className="edit-username"></IconButton>
       </div>
 
       {isAddTodoVisible && (

@@ -31,14 +31,7 @@ const StyledProjectList = styled.ul`
   }
 
   ul li {
-    margin: 1rem;
-  }
-
-  ul li:first-of-type {
-    margin-left: 0;
-  }
-  ul li:last-of-type {
-    margin-right: 0;
+    margin: 1rem 0;
   }
 `;
 
@@ -70,7 +63,7 @@ const ProjectList = (props: {
       ) : (
         <Splide
           hasTrack={false}
-          options={{ rewind: true, perPage: 3, arrows: false,   breakpoints: {
+          options={{ rewind: true, perPage: 3, arrows: false, gap: '1rem', pagination: false, breakpoints: {
             800: {
               perPage: 2,
             }, 600: {

@@ -27,8 +27,8 @@ const StyledButton = styled.button`
   }
 `;
 
-const IconButton = (props: { icon: any; onClick: (e: any) => void }) => {
-  return <StyledButton onClick={props.onClick}>{props.icon}</StyledButton>;
+const IconButton = (props: { icon: any; onClick: (e: any) => void; className?: string }) => {
+  return <StyledButton onClick={props.onClick} className={props.className}>{props.icon}</StyledButton>;
 };
 
 export default IconButton;
