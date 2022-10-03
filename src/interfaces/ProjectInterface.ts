@@ -6,7 +6,7 @@ interface ProjectInterface {
   description: string;
   todos: TodoInterface[];
   color: string;
-  icon: string;
+  // icon: string;
 }
 
 export default ProjectInterface;

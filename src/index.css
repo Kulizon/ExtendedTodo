@@ -41,7 +41,7 @@ ul {
   list-style: none;
 }
 
-input {
+input, select {
   border: 2px #d8dbe4 solid;
   border-radius: 8px;
   font-size: 1rem;
@@ -58,4 +58,22 @@ input[type="text"],
 input[type="date"],
 input[type="time"] {
   padding: 0.25rem 0.5rem;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #d8dbe4;
+  border-radius: 360px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #9c9da1;
+  border-radius: 360px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

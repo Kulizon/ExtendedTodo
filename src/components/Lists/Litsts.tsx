@@ -9,6 +9,7 @@ const Lists = (props: {
   projects: ProjectInterface[];
   onDelete: (id: string, type: "PROJECT" | "TODO", projectID?: string) => void;
   onToggleState?: (id: string, projectID?: string) => void;
+  onStartEdit?: (oldTodo: TodoInterface) => void;
 }) => {
   return (
     <div>
@@ -16,11 +17,13 @@ const Lists = (props: {
         projects={props.projects}
         onDelete={props.onDelete}
         onToggleState={props.onToggleState}
+        onStartEdit={props.onStartEdit}
       ></ProjectList>
       <TodoList
         todos={props.todos}
         onDelete={props.onDelete}
         onToggleState={props.onToggleState}
+        onStartEdit={props.onStartEdit}
       ></TodoList>
     </div>
   );

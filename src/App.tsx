@@ -8,12 +8,18 @@ import Lists from "./components/Lists/Litsts";
 import IconButton from "./components/UI/IconButton/IconButton";
 import Popup from "./components/UI/Popup/Popup";
 import Button from "./components/UI/Button/Button";
+import AddIcon from "./assets/AddIcon";
 
 const StyledApp = styled.div`
   display: flex;
   flex-direction: column;
   max-width: 1200px;
   margin: 2rem auto;
+
+  @media (max-width: 1232px) { 
+    padding: 0 2rem;
+  }
+
 
   .username-wrap {
     display: flex;
@@ -22,13 +28,26 @@ const StyledApp = styled.div`
   }
 
   > button:not(.username-wrap button) {
-    position: absolute;
+    position: fixed;
     right: 1.5rem;
     bottom: 1.5rem;
     z-index: 160;
     width: 3rem;
     height: 3rem;
     font-size: 2.25rem;
+  }
+
+  @media (max-width: 600px) {
+
+    > button:not(.username-wrap button) {
+      right: 1rem;
+      bottom: 1rem;
+      z-index: 160;
+      width: 2.5rem;
+      height: 2.5rem;
+      font-size: 1.5rem;
+    }
+  
   }
 `;
 
@@ -53,6 +72,7 @@ const App = () => {
   const [projects, setProjects] = useState<ProjectInterface[]>([]);
 
   const [isAddTodoVisible, setIsAddTodoVisible] = useState(false);
+  const [editedTodo, setEditedTodo] = useState<TodoInterface>();
   const [name, setName] = useState("");
 
   const addTodoHandler = (newTodo: TodoInterface) => {
@@ -114,6 +134,17 @@ const App = () => {
     }
   };
 
+  // edit --> delete old and add new
+  const editDoneHandler = (oldTodo: TodoInterface, newTodo: TodoInterface) => {
+    deleteHandler(oldTodo.id, "TODO", oldTodo.projectID);
+    addTodoHandler(newTodo);
+  };
+
+  // start edit
+  const startEditHandler = (oldTodo: TodoInterface) => {
+    setEditedTodo(oldTodo);
+  };
+
   useEffect(() => {
     if (localStorage.getItem("todos")) {
       setTodos(JSON.parse(localStorage.getItem("todos")!));
@@ -124,8 +155,6 @@ const App = () => {
     }
 
     if (localStorage.getItem("name")) {
-      console.log();
-
       setName(localStorage.getItem("name")!);
     }
   }, []);
@@ -135,12 +164,14 @@ const App = () => {
     if (count < 2) return;
 
     localStorage.setItem("todos", JSON.stringify(todos));
+    // eslint-disable-next-line
   }, [todos]);
 
   useEffect(() => {
     setCount(count + 1);
     if (count < 2) return;
     localStorage.setItem("projects", JSON.stringify(projects));
+    // eslint-disable-next-line
   }, [projects]);
 
   if (!name)
@@ -179,15 +210,29 @@ const App = () => {
           ></AddTodo>
         </Popup>
       )}
+
+      {editedTodo && (
+        <Popup onBackdropClick={() => setEditedTodo(undefined)}>
+          <AddTodo
+            onAddTodo={addTodoHandler}
+            onAddProject={addProjectHandler}
+            editedTodo={editedTodo}
+            onEditDone={editDoneHandler}
+            projects={projects}
+            closePopup={() => setEditedTodo(undefined)}
+          ></AddTodo>
+        </Popup>
+      )}
       <Lists
         todos={todos}
         projects={projects}
         onDelete={deleteHandler}
         onToggleState={toggleStateHandler}
+        onStartEdit={startEditHandler}
       ></Lists>
-      {!isAddTodoVisible && (
+      {!isAddTodoVisible && !editedTodo && (
         <IconButton
-          icon="+"
+          icon={<AddIcon></AddIcon>}
           onClick={() => setIsAddTodoVisible(true)}
         ></IconButton>
       )}

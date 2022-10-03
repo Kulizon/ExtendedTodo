@@ -10,6 +10,10 @@ const StyledButton = styled.button`
   padding: 0.3rem 1rem;
   border-radius: 8px;
   font-weight: ${fntWghtBld};
+
+  &:hover {
+    opacity: 0.85;
+  }
 `;
 
 const Button = (props: {

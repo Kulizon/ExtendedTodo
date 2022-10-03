@@ -7,10 +7,10 @@ import TodoInterface from "../../interfaces/TodoInterface";
 import Todo from "../Todo/Todo";
 import IconButton from "../UI/IconButton/IconButton";
 import Button from "../UI/Button/Button";
+import DeleteIcon from "../../assets/DeleteIcon";
 
 const StyledAddTodo = styled.div`
   border-radius: 15px;
-  padding: 1rem;
   background: #fff;
   width: 100%;
   position: relative;
@@ -21,9 +21,25 @@ const StyledAddTodo = styled.div`
     top: -0.75rem;
   }
 
+  > span {
+    max-height: 90vh;
+    overflow-y: hidden;
+
+    form, > div {
+      padding: 0.5rem;
+      margin: 0.5rem;
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+  }
+
   form {
     display: flex;
     flex-direction: column;
+  }
+
+  > div {
+    margin: 1rem;
   }
 
   form > div {
@@ -71,6 +87,14 @@ const StyledAddTodo = styled.div`
   form > button {
     align-self: center;
   }
+
+  @media (max-width: 800px) {
+    form > div {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
 `;
 
 const AddTodo = (props: {
@@ -78,24 +102,31 @@ const AddTodo = (props: {
   onAddProject: (newProject: ProjectInterface) => void;
   projects: ProjectInterface[];
   closePopup: () => void;
+  editedTodo?: TodoInterface;
+  onEditDone?: (oldTodo: TodoInterface, newTodo: TodoInterface) => void;
 }) => {
   const formRef = useRef<any>();
 
-  const [todo, setTodo] = useState<TodoInterface>({
-    id: nanoid(),
-    title: "",
-    text: "",
-    color: "#000",
-    projectID: props.projects[0]?.id,
-    projectTitle: props.projects[0]?.title,
-    finished: false,
-    dueToDate: "",
-    dueToTime: "",
-  });
+  const [todo, setTodo] = useState<TodoInterface>(
+    props.editedTodo
+      ? { ...props.editedTodo }
+      : {
+          id: nanoid(),
+          title: "",
+          text: "",
+          color: "#000",
+          projectID: props.projects[0]?.id,
+          projectTitle: props.projects[0]?.title,
+          finished: false,
+          dueToDate: "",
+          dueToTime: "",
+        }
+  );
 
   const [isAddProjectMenuVisible, setIsAddProjectMenuVisible] = useState(false);
 
   useEffect(() => {
+    if (props.editedTodo) return;
     setTodo((prevTodo) => {
       return {
         ...prevTodo,
@@ -103,7 +134,7 @@ const AddTodo = (props: {
         projectTitle: props.projects[0]?.title,
       };
     });
-  }, [props.projects]);
+  }, [props.projects, props.editedTodo]);
 
   const handleChange = (e: any) => {
     const value = e.target.value;
@@ -126,6 +157,23 @@ const AddTodo = (props: {
 
   const addTodoHandler = (e: any) => {
     e.preventDefault();
+
+    if (e.nativeEvent.submitter.id === "project-submit") {
+      const projectTitle = e.target[5].value;
+      const projectDescription = e.target[6].value;
+      const projectColor = e.target[7].value;
+      // const projectIcon = e.target[8].value;
+
+      props.onAddProject({
+        title: projectTitle,
+        description: projectDescription,
+        color: projectColor,
+        todos: [],
+        // icon: projectIcon,
+        id: nanoid(),
+      });
+      setIsAddProjectMenuVisible(false);
+    }
 
     if (e.nativeEvent.submitter.id === "todo-submit") {
       const projectInput = e.target[5];
@@ -156,24 +204,14 @@ const AddTodo = (props: {
         return;
       }
 
+      if (props.onEditDone && props.editedTodo) {
+        props.onEditDone(props.editedTodo, todo);
+        props.closePopup();
+        return;
+      }
+
       props.onAddTodo(todo);
-    }
-
-    if (e.nativeEvent.submitter.id === "project-submit") {
-      const projectTitle = e.target[5].value;
-      const projectDescription = e.target[6].value;
-      const projectColor = e.target[7].value;
-      const projectIcon = e.target[8].value;
-
-      props.onAddProject({
-        title: projectTitle,
-        description: projectDescription,
-        color: projectColor,
-        todos: [],
-        icon: projectIcon,
-        id: nanoid(),
-      });
-      setIsAddProjectMenuVisible(false);
+      props.closePopup();
     }
   };
 
@@ -186,33 +224,63 @@ const AddTodo = (props: {
 
   return (
     <StyledAddTodo>
-      <IconButton onClick={props.closePopup} icon="x"></IconButton>
+      <IconButton onClick={props.closePopup} icon={<DeleteIcon></DeleteIcon>}></IconButton>
+      <span className="wrap">
       <form onSubmit={addTodoHandler} ref={formRef}>
         <div>
-          <h2>Todo</h2>
+          <h2>Todo 📌</h2>
           <div>
             <label htmlFor="title">Title</label>
-            <input type="text" name="title" onChange={handleChange} />
+            <input
+              type="text"
+              name="title"
+              onChange={handleChange}
+              defaultValue={props.editedTodo ? props.editedTodo.title : ""}
+            />
           </div>
           <div>
             <label htmlFor="title">Text</label>
-            <input type="text" name="text" onChange={handleChange} />
+            <input
+              type="text"
+              name="text"
+              onChange={handleChange}
+              defaultValue={props.editedTodo ? props.editedTodo.text : ""}
+            />
           </div>
           <div>
             <label htmlFor="title">Color</label>
-            <input type="color" name="color" onChange={handleChange} />
+            <input
+              type="color"
+              name="color"
+              onChange={handleChange}
+              defaultValue={props.editedTodo ? props.editedTodo.color : ""}
+            />
           </div>
           <div>
             <label htmlFor="title">Due to</label>
             <div>
-              <input type="date" name="dueToDate" onChange={handleChange} />
-              <input type="time" name="dueToTime" onChange={handleChange} />
+              <input
+                type="date"
+                name="dueToDate"
+                onChange={handleChange}
+                defaultValue={
+                  props.editedTodo ? props.editedTodo.dueToDate : ""
+                }
+              />
+              <input
+                type="time"
+                name="dueToTime"
+                onChange={handleChange}
+                defaultValue={
+                  props.editedTodo ? props.editedTodo.dueToTime : ""
+                }
+              />
             </div>
           </div>
         </div>
 
         <div>
-          <h2>Project</h2>
+          <h2>Project ⚙️</h2>
           {isAddProjectMenuVisible || props.projects.length === 0 ? (
             <>
               <div>
@@ -227,14 +295,19 @@ const AddTodo = (props: {
                 <label htmlFor="projectColor">Color</label>
                 <input type="color" name="projectColor" />
               </div>
-              <div>
+              <span></span>
+              {/* <div>
                 <label htmlFor="projectIcon">Icon</label>
                 <input type="text" name="projectIcon" />
-              </div>
+              </div> */}
               <Button id="project-submit">Add New Project</Button>
             </>
           ) : (
-            <select name="project" onChange={handleChange}>
+            <select
+              name="project"
+              onChange={handleChange}
+              defaultValue={props.editedTodo ? props.editedTodo.projectID : ""}
+            >
               {props.projects.map((p) => (
                 <option value={p.id} key={p.id}>
                   {p.title}
@@ -256,15 +329,18 @@ const AddTodo = (props: {
         </div>
 
         <Button id="todo-submit" disabled={isAddProjectMenuVisible}>
-          Add
+          {props.editedTodo && props.onEditDone ? "Edit" : "Add"}
         </Button>
       </form>
+
+      </span>
+
       {todo.title &&
         todo.text &&
         todo.color &&
         todo.projectID &&
         todo.dueToDate &&
-        todo.dueToTime && <Todo todo={todo} onToggleState={() => {}}></Todo>}
+        todo.dueToTime && <Todo todo={todo} onToggleState={() => {}} darkerBackground></Todo>}
     </StyledAddTodo>
   );
 };

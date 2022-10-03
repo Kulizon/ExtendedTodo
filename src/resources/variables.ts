@@ -4,11 +4,11 @@ export const lght3 = "#e2e9f1";
 export const lght4 = "#d8dbe4";
 export const lght5 = "#9c9da1";
 
-export const drk1 = "#ffffff";
+export const drk1 = "#000000";
 export const drk2 = "#141414";
 export const drk3 = "#2c2c2c";
-export const drk4 = "#2c2c2c";
-export const drk5 = "#ffffff";
+export const drk4 = "#363636";
+export const drk5 = "#454545";
 
 export const main = "#5d54bf";
 export const positive = "#4ea570";

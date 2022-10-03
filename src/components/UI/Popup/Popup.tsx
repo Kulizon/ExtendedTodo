@@ -13,6 +13,7 @@ const StyledPopup = styled.div`
   max-width: 1200px;
   display: flex;
   padding: 1rem;
+
 `;
 
 const StyledBackdrop = styled.div`

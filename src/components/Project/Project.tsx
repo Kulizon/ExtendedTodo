@@ -2,11 +2,13 @@ import { useState } from "react";
 import styled from "styled-components";
 import hexToRgb from "../../resources/hexToRgb";
 import ProjectInterface from "../../interfaces/ProjectInterface";
+import TodoInterface from "../../interfaces/TodoInterface";
 
 import Todo from "../Todo/Todo";
 import Popup from "../UI/Popup/Popup";
 import IconButton from "../UI/IconButton/IconButton";
 import Button from "../UI/Button/Button";
+import DeleteIcon from "../../assets/DeleteIcon";
 
 import { drk3, lght1 } from "../../resources/variables";
 
@@ -18,6 +20,7 @@ const StyledProject = styled("div")<StyledButtonProps>`
   border-radius: 15px;
   background: ${lght1};
   max-width: 400px;
+  height: 100%;
 
   &:hover:not(.highlighted) {
     cursor: pointer;
@@ -26,12 +29,12 @@ const StyledProject = styled("div")<StyledButtonProps>`
 
   > p,
   > div,
-  li {
+  li, span > div, span > p {
     padding-right: 2rem;
     padding-left: 2rem;
   }
 
-  > div {
+  > div, &.highlighted span > div {
     background: ${(props) =>
       props.backgroundColor ? props.backgroundColor : "#eee"};
     color: ${(props) => {
@@ -47,10 +50,10 @@ const StyledProject = styled("div")<StyledButtonProps>`
   }
 
   h3 {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
 
-  > p {
+  > p, span > p {
     font-size: 1.1rem;
     padding-top: 1.5rem;
     padding-bottom: 1rem;
@@ -61,11 +64,19 @@ const StyledProject = styled("div")<StyledButtonProps>`
     width: 100%;
     position: relative;
     background: ${lght1};
-    margin: 0;
+    margin: 0;     
+
+    > span {
+      max-height: 90vh;
+      overflow-y: hidden;
+    }
 
     ul {
+      height: 100%;
+      max-height: 60vh;
+      overflow-y: auto;
+
       li > div {
-        padding: 0 0 1.5rem;
 
         > button {
           top: 0;
@@ -74,16 +85,18 @@ const StyledProject = styled("div")<StyledButtonProps>`
       }
     }
 
-    > div {
+    > div, span > div {
       position: relative;
 
       button {
         position: absolute;
         right: 1rem;
-        bottom: 1rem;
+        bottom: 0;
+        transform: translateY(50%)
       }
     }
   }
+
 
   > button {
     position: absolute;
@@ -97,6 +110,7 @@ const Project = (props: {
   onDelete: (id: string, type: "PROJECT" | "TODO", projectID?: string) => void;
   onChangeProgressBar: () => void;
   onToggleState?: (id: string, projectID?: string) => void;
+  onStartEdit?: (oldTodo: TodoInterface) => void;
 }) => {
   const [isHighlighted, setIsHighlighted] = useState(false);
 
@@ -121,7 +135,9 @@ const Project = (props: {
             className="highlighted"
             backgroundColor={props.project.color}
           >
-            <div>
+
+<span className=".wrap">
+<div>
               <h3>{props.project.title}</h3>
               <span>{amountOfTodosText}</span>
               <Button onClick={deleteHandler}>Delete Project</Button>
@@ -135,12 +151,19 @@ const Project = (props: {
                     todo={t}
                     onToggleState={props.onToggleState}
                     onDelete={deleteTodoHandler.bind(this, t.id)}
+                    onStartEdit={props.onStartEdit}
+                    closeProjectPopup={() => setIsHighlighted(false)}
+                    darkerBackground
                   ></Todo>
                 </li>
               ))}
             </ul>
+            
+
+</span>
+
             <IconButton
-              icon="x"
+              icon={<DeleteIcon></DeleteIcon>}
               onClick={() => setIsHighlighted(false)}
             ></IconButton>
           </StyledProject>

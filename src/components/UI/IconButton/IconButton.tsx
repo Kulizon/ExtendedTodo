@@ -6,14 +6,21 @@ const StyledButton = styled.button`
   border-radius: 360px;
   width: 2rem;
   height: 2rem;
-  font-size: 1.25rem;
   display: flex;
   justify-content: center;
   align-items: center;
   border: none;
   background: ${main};
   color: ${lght1};
-  box-shadow: 0px 1px 2px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 2px 5px 1px rgba(0, 0, 0, 0.4);
+
+
+  svg {
+    width: 100%;
+    height: 100%;  
+    padding: 0.4rem;
+    fill: ${lght1}
+  }
 
   &:hover {
     opacity: 0.85;
