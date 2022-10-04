@@ -164,6 +164,11 @@ const AddTodo = (props: {
       const projectColor = e.target[7].value;
       // const projectIcon = e.target[8].value;
 
+      if (!projectTitle || !projectDescription || !projectColor) {
+        alert('Fill out all fields!')
+        return
+      }
+
       props.onAddProject({
         title: projectTitle,
         description: projectDescription,
@@ -184,7 +189,7 @@ const AddTodo = (props: {
           projectID: projectInput.value,
           projectTitle: props.projects.filter(
             (p) => p.id === projectInput.value
-          )[0].title,
+          )[0]?.title,
         };
       });
 
