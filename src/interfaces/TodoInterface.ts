@@ -6,8 +6,8 @@ interface TodoInterface {
   projectID: string;
   projectTitle: string;
   finished: boolean;
-  dueToDate: string;
-  dueToTime: string;
+  dueToDate?: string;
+  dueToTime?: string;
 }
 
 export default TodoInterface;

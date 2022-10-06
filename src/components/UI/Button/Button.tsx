@@ -11,6 +11,15 @@ const StyledButton = styled.button`
   border-radius: 8px;
   font-weight: ${fntWghtBld};
 
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+
+    &:hover {
+      opacity: 0.7
+    }
+  }
+
   &:hover {
     opacity: 0.85;
   }

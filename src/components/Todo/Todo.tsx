@@ -133,9 +133,10 @@ const Todo = (props: {
         <p>{props.todo.text}</p>
         <div>        <p>
           Project: {props.todo.projectTitle}  </p>
-          <p>
-          Due to: {props.todo.dueToDate}, {props.todo.dueToTime}
-        </p></div>
+          {props.todo.dueToDate && props.todo.dueToTime && (<p>
+           Due to: {props.todo.dueToDate}, {props.todo.dueToTime}
+        </p>)}
+        </div>
 
       </div>
       <div className="button-container">

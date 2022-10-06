@@ -28,7 +28,7 @@ const StyledAddTodo = styled.div`
     form, > div {
       padding: 0.5rem;
       margin: 0.5rem;
-      max-height: 60vh;
+      max-height: 70vh;
       overflow-y: auto;
     }
   }
@@ -62,10 +62,15 @@ const StyledAddTodo = styled.div`
       justify-content: space-between;
       width: 100%;
 
-      > div {
+      &.due-to {
         display: grid;
         grid-template-columns: 1fr 1fr;
+        grid-column: 1/3;
         column-gap: 2rem;
+
+        label {
+          grid-column: 1/3;
+        }
       }
 
       label {
@@ -114,7 +119,7 @@ const AddTodo = (props: {
           id: nanoid(),
           title: "",
           text: "",
-          color: "#000",
+          color: props.projects[0]?.color,
           projectID: props.projects[0]?.id,
           projectTitle: props.projects[0]?.title,
           finished: false,
@@ -130,6 +135,7 @@ const AddTodo = (props: {
     setTodo((prevTodo) => {
       return {
         ...prevTodo,
+        color: props.projects[0]?.color,
         projectID: props.projects[0]?.id,
         projectTitle: props.projects[0]?.title,
       };
@@ -144,8 +150,10 @@ const AddTodo = (props: {
       setTodo((prevTodo) => {
         return {
           ...prevTodo,
+
           projectID: value,
           projectTitle: props.projects.filter((p) => p.id === value)[0].title,
+          color: props.projects.filter((p) => p.id === value)[0].color,
         };
       });
     } else {
@@ -159,9 +167,9 @@ const AddTodo = (props: {
     e.preventDefault();
 
     if (e.nativeEvent.submitter.id === "project-submit") {
-      const projectTitle = e.target[5].value;
-      const projectDescription = e.target[6].value;
-      const projectColor = e.target[7].value;
+      const projectTitle = e.target[4].value;
+      const projectDescription = e.target[5].value;
+      const projectColor = e.target[6].value;
       // const projectIcon = e.target[8].value;
 
       if (!projectTitle || !projectDescription || !projectColor) {
@@ -181,7 +189,8 @@ const AddTodo = (props: {
     }
 
     if (e.nativeEvent.submitter.id === "todo-submit") {
-      const projectInput = e.target[5];
+      const projectInput = e.target[4];
+      
 
       setTodo((t) => {
         return {
@@ -190,15 +199,15 @@ const AddTodo = (props: {
           projectTitle: props.projects.filter(
             (p) => p.id === projectInput.value
           )[0]?.title,
+          color: props.projects.filter(
+            (p) => p.id === projectInput.value
+          )[0]?.color,
         };
       });
 
       if (
         !todo.title ||
-        !todo.text ||
-        !todo.color ||
-        !todo.dueToDate ||
-        !todo.dueToTime
+        !todo.text
       ) {
         alert("Fill out all fields!");
         return;
@@ -223,7 +232,7 @@ const AddTodo = (props: {
   useEffect(() => {
     if (props.projects.length === 1)
       setTodo((prevTodo) => {
-        return { ...prevTodo, projectID: props.projects[0].id };
+        return { ...prevTodo, projectID: props.projects[0].id, projectTitle: props.projects[0].title, color: props.projects[0].color };
       });
   }, [props.projects]);
 
@@ -240,7 +249,7 @@ const AddTodo = (props: {
               type="text"
               name="title"
               onChange={handleChange}
-              defaultValue={props.editedTodo ? props.editedTodo.title : ""}
+              defaultValue={props.editedTodo ? props.editedTodo.title : ""} autoComplete="false"
             />
           </div>
           <div>
@@ -249,21 +258,11 @@ const AddTodo = (props: {
               type="text"
               name="text"
               onChange={handleChange}
-              defaultValue={props.editedTodo ? props.editedTodo.text : ""}
+              defaultValue={props.editedTodo ? props.editedTodo.text : ""} autoComplete="false"
             />
           </div>
-          <div>
-            <label htmlFor="title">Color</label>
-            <input
-              type="color"
-              name="color"
-              onChange={handleChange}
-              defaultValue={props.editedTodo ? props.editedTodo.color : ""}
-            />
-          </div>
-          <div>
+          <div className="due-to">
             <label htmlFor="title">Due to</label>
-            <div>
               <input
                 type="date"
                 name="dueToDate"
@@ -280,7 +279,6 @@ const AddTodo = (props: {
                   props.editedTodo ? props.editedTodo.dueToTime : ""
                 }
               />
-            </div>
           </div>
         </div>
 
@@ -290,11 +288,11 @@ const AddTodo = (props: {
             <>
               <div>
                 <label htmlFor="projectTitle">Title</label>
-                <input type="text" name="projectTitle" />
+                <input type="text" name="projectTitle" autoComplete="false"/>
               </div>
               <div>
                 <label htmlFor="projectDescription">Description</label>
-                <input type="text" name="projectDescription" />
+                <input type="text" name="projectDescription" autoComplete="false"/>
               </div>
               <div>
                 <label htmlFor="projectColor">Color</label>
@@ -333,7 +331,7 @@ const AddTodo = (props: {
           )}
         </div>
 
-        <Button id="todo-submit" disabled={isAddProjectMenuVisible}>
+        <Button id="todo-submit" disabled={isAddProjectMenuVisible || props.projects.length === 0}>
           {props.editedTodo && props.onEditDone ? "Edit" : "Add"}
         </Button>
       </form>
@@ -342,10 +340,8 @@ const AddTodo = (props: {
 
       {todo.title &&
         todo.text &&
-        todo.color &&
         todo.projectID &&
-        todo.dueToDate &&
-        todo.dueToTime && <Todo todo={todo} onToggleState={() => {}} darkerBackground></Todo>}
+<Todo todo={todo} onToggleState={() => {}} darkerBackground></Todo>}
     </StyledAddTodo>
   );
 };
